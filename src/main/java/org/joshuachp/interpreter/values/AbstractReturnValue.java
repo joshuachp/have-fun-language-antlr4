@@ -1,4 +1,4 @@
-package org.example.interpreter.values;
+package org.joshuachp.interpreter.values;
 
 public abstract class AbstractReturnValue {
 

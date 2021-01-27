@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'org.example.Main'
+mainClassName = 'org.joshuachp.Main'
 
 group 'org.example'
 version '0.0.1'

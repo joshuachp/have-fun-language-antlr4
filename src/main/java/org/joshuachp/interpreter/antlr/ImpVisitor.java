@@ -1,5 +1,5 @@
 // Generated from /home/joshuachp/GitHub/have-fun-language/src/Imp.g4 by ANTLR 4.9.1
-package org.example.interpreter.antlr;
+package org.joshuachp.interpreter.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -65,6 +65,13 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNat(ImpParser.NatContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code call}
+	 * labeled alternative in {@link ImpParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCall(ImpParser.CallContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code divMulMod}
 	 * labeled alternative in {@link ImpParser#exp}.
@@ -135,4 +142,10 @@ public interface ImpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitId(ImpParser.IdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ImpParser#fun}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFun(ImpParser.FunContext ctx);
 }

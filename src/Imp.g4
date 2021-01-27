@@ -1,6 +1,6 @@
 grammar Imp;
 
-prog : com EOF ;
+prog : fun* com EOF;
 
 com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | ID ASSIGN exp                                                     # assign
@@ -8,7 +8,7 @@ com : IF LPAR exp RPAR THEN LBRACE com RBRACE ELSE LBRACE com RBRACE    # if
     | com SEMICOLON com                                                 # seq
     | WHILE LPAR exp RPAR LBRACE com RBRACE                             # while
     | OUT LPAR exp RPAR                                                 # out
-    ;
+   ;
 
 exp : NAT                                 # nat
     | BOOL                                # bool
@@ -21,43 +21,48 @@ exp : NAT                                 # nat
     | exp op=(EQQ | NEQ) exp              # eqExp
     | exp op=(AND | OR) exp               # logicExp
     | ID                                  # id
-    ;
+    | ID LPAR exp* RPAR                   # call
+   ;
 
-NAT : '0' | [1-9][0-9]* ;
-BOOL : 'true' | 'false' ;
+fun: FUN ID LPAR ID* RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;
 
-PLUS  : '+' ;
+NAT : '0' | [1-9][0-9]*;
+BOOL : 'true' | 'false';
+
+PLUS  : '+';
 MINUS : '-';
-MUL   : '*' ;
-DIV   : '/' ;
-MOD   : 'mod' ;
-POW   : '^' ;
+MUL   : '*';
+DIV   : '/';
+MOD   : 'mod';
+POW   : '^';
 
-AND : '&' ;
-OR  : '|' ;
+AND : '&';
+OR  : '|';
 
-EQQ : '==' ;
-NEQ : '!=' ;
-LEQ : '<=' ;
-GEQ : '>=' ;
-LT  : '<' ;
-GT  : '>' ;
-NOT : '!' ;
+EQQ : '==';
+NEQ : '!=';
+LEQ : '<=';
+GEQ : '>=';
+LT  : '<';
+GT  : '>';
+NOT : '!';
 
-IF     : 'if' ;
-THEN   : 'then' ;
-ELSE   : 'else' ;
-WHILE  : 'while' ;
-SKIPP  : 'skip' ;
-ASSIGN : '=' ;
-OUT    : 'out' ;
+IF     : 'if';
+THEN   : 'then';
+ELSE   : 'else';
+WHILE  : 'while';
+SKIPP  : 'skip';
+ASSIGN : '=';
+OUT    : 'out';
+FUN    : 'fun';
+RETURN : 'return';
 
-LPAR      : '(' ;
+LPAR      : '(';
 RPAR      : ')';
-LBRACE    : '{' ;
-RBRACE    : '}' ;
-SEMICOLON : ';' ;
+LBRACE    : '{';
+RBRACE    : '}';
+SEMICOLON : ';';
 
-ID : [a-z]+ ;
+ID : [a-z]+;
 
-WS : [ \t\r\n]+ -> skip ;
+WS : [ \t\r\n]+ -> skip;

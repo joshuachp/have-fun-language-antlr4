@@ -1,18 +1,22 @@
-package org.example.interpreter;
+package org.joshuachp.interpreter;
 
 
-import org.example.interpreter.antlr.ImpBaseVisitor;
-import org.example.interpreter.antlr.ImpParser;
-import org.example.interpreter.values.*;
+import org.joshuachp.interpreter.antlr.ImpBaseVisitor;
+import org.joshuachp.interpreter.antlr.ImpParser;
+import org.joshuachp.interpreter.values.*;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
 
-    private final HashMap<String, AbstractValue<?>> memory;
+    private final HashMap<String, Fun> functions;
+    private HashMap<String, AbstractValue<?>> memory;
 
     public IntImp() {
         memory = new HashMap<>();
+        functions = new HashMap<>();
     }
 
     private VoidValue visitCom(ImpParser.ComContext ctx) {
@@ -24,13 +28,7 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
         try {
             value = ((IntegerValue) visit(ctx)).getValue();
         } catch (ClassCastException e) {
-            System.err.println("Type mismatch exception!");
-            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
-            System.err.println(ctx.getText());
-            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-            System.err.println("> Natural expression expected.");
-            System.exit(1);
+            Utils.panic(ctx, "Type mismatch, natural expression expected.");
         }
         assert value != null;
         return value;
@@ -41,13 +39,7 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
         try {
             value = ((BoolValue) visit(ctx)).getValue();
         } catch (ClassCastException e) {
-            System.err.println("Type mismatch exception!");
-            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-            System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
-            System.err.println(ctx.getText());
-            System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-            System.err.println("> Boolean expression expected.");
-            System.exit(1);
+            Utils.panic(ctx, "Type mismatch, boolean expression expected.");
         }
         assert value != null;
         return value;
@@ -55,6 +47,9 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
 
     @Override
     public VoidValue visitProg(ImpParser.ProgContext ctx) {
+        for (ImpParser.FunContext fun : ctx.fun()) {
+            visitFun(fun);
+        }
         return visitCom(ctx.com());
     }
 
@@ -201,5 +196,54 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
             case ImpParser.OR -> new BoolValue(left || right);
             default -> null;
         };
+    }
+
+    @Override
+    public VoidValue visitFun(ImpParser.FunContext ctx) {
+        String name = ctx.ID(0).getText();
+        if (functions.containsKey(name)) {
+            Utils.panic(ctx, "Fun " + name + " already defined.");
+        }
+        functions.put(name, new Fun(ctx));
+        return new VoidValue();
+    }
+
+    @Override
+    public AbstractReturnValue visitCall(ImpParser.CallContext ctx) {
+        String name = ctx.ID().getText();
+        if (!functions.containsKey(name)) {
+            Utils.panic(ctx, "Function " + name + " used but never declared");
+        }
+
+        Fun fun = functions.get(name);
+        List<ImpParser.ExpContext> argsCtx = ctx.exp();
+        List<String> argsName = fun.getParameters();
+
+        if (argsCtx.size() != argsName.size()) {
+            Utils.panic(ctx, "Function f called with the wrong number of arguments");
+        }
+
+        // Save the memory state
+        HashMap<String, AbstractValue<?>> snapshot = this.memory;
+        this.memory = new HashMap<>();
+
+        // Create the memory
+        List<AbstractValue<?>> args = argsCtx.stream()
+                .map((exp) -> (AbstractValue<?>) visit(exp))
+                .collect(Collectors.toList());
+        for (int i = 0; i < args.size(); i++) {
+            this.memory.put(argsName.get(i), args.get(i));
+        }
+
+        // Visit the function
+        if (fun.getBody() != null) {
+            visitCom(fun.getBody());
+        }
+
+        AbstractValue<?> ret = (AbstractValue<?>) visit(fun.getRet());
+
+        // Reset the memory
+        this.memory = snapshot;
+        return ret;
     }
 }
