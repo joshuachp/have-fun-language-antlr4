@@ -5,18 +5,33 @@ import org.example.interpreter.antlr.ImpBaseVisitor;
 import org.example.interpreter.antlr.ImpParser;
 import org.example.interpreter.values.*;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
+public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
 
     private final HashMap<String, Fun> functions;
+    private final BufferedWriter out;
     private HashMap<String, AbstractValue<?>> memory;
 
-    public IntImp() {
+    public Interpreter() {
         memory = new HashMap<>();
         functions = new HashMap<>();
+        try {
+            this.out = Files.newBufferedWriter(
+                    Paths.get("out.txt"),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private VoidValue visitCom(ImpParser.ComContext ctx) {
@@ -89,7 +104,15 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
 
     @Override
     public VoidValue visitOut(ImpParser.OutContext ctx) {
-        System.out.println(visit(ctx.exp()));
+        String str = visit(ctx.exp()).toString();
+        System.out.println(str);
+        try {
+            out.write(str);
+            out.newLine();
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return new VoidValue();
     }
 
@@ -163,10 +186,7 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
         String id = ctx.ID().getText();
 
         if (!memory.containsKey(id)) {
-            System.err.println("Variable " + id + " used but never instantiated");
-            System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-
-            System.exit(1);
+            Utils.panic(ctx, "Variable " + id + " used but never instantiated");
         }
 
         return memory.get(id);
@@ -223,17 +243,21 @@ public class IntImp extends ImpBaseVisitor<AbstractReturnValue> {
             Utils.panic(ctx, "Function f called with the wrong number of arguments");
         }
 
-        // Save the memory state
-        HashMap<String, AbstractValue<?>> snapshot = this.memory;
-        this.memory = new HashMap<>();
+        // Create the new memory map
+        HashMap<String, AbstractValue<?>> newMemory = new HashMap<>();
 
-        // Create the memory
+        // First get the parameter value
         List<AbstractValue<?>> args = argsCtx.stream()
                 .map((exp) -> (AbstractValue<?>) visit(exp))
                 .collect(Collectors.toList());
         for (int i = 0; i < args.size(); i++) {
-            this.memory.put(argsName.get(i), args.get(i));
+            newMemory.put(argsName.get(i), args.get(i));
         }
+
+        // Then save the memory state and swap the new memory
+        HashMap<String, AbstractValue<?>> snapshot = this.memory;
+        this.memory = newMemory;
+
 
         // Visit the function
         if (fun.getBody() != null) {

@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.example.interpreter.IntImp;
+import org.example.interpreter.Interpreter;
 import org.example.interpreter.antlr.ImpLexer;
 import org.example.interpreter.antlr.ImpParser;
 
@@ -27,7 +27,7 @@ class Main {
         CommonTokenStream token = new CommonTokenStream(lexer);
         ImpParser parser = new ImpParser(token);
         ParseTree tree = parser.prog();
-        IntImp intImp = new IntImp();
-        intImp.visit(tree);
+        Interpreter interpreter = new Interpreter();
+        interpreter.visit(tree);
     }
 }

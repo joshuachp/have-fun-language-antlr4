@@ -13,6 +13,6 @@ public class Utils {
         System.err.println(ctx.getText());
         System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
         */
-        System.exit(1);
+        throw new RuntimeException();
     }
 }

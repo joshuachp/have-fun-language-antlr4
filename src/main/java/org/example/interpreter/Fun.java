@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class Fun {
     private final LinkedHashSet<String> parameters;
-    private ImpParser.ComContext body;
-    private ImpParser.ExpContext ret;
+    private final ImpParser.ComContext body;
+    private final ImpParser.ExpContext ret;
 
     public Fun(ImpParser.FunContext fun) {
         List<TerminalNode> ids = fun.ID();
