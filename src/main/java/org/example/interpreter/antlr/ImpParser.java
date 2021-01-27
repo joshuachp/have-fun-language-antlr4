@@ -20,7 +20,7 @@ public class ImpParser extends Parser {
 		NAT=1, BOOL=2, PLUS=3, MINUS=4, MUL=5, DIV=6, MOD=7, POW=8, AND=9, OR=10, 
 		EQQ=11, NEQ=12, LEQ=13, GEQ=14, LT=15, GT=16, NOT=17, IF=18, THEN=19, 
 		ELSE=20, WHILE=21, SKIPP=22, ASSIGN=23, OUT=24, FUN=25, RETURN=26, LPAR=27, 
-		RPAR=28, LBRACE=29, RBRACE=30, SEMICOLON=31, ID=32, WS=33;
+		RPAR=28, LBRACE=29, RBRACE=30, SEMICOLON=31, COLON=32, ID=33, WS=34;
 	public static final int
 		RULE_prog = 0, RULE_com = 1, RULE_exp = 2, RULE_fun = 3;
 	private static String[] makeRuleNames() {
@@ -35,7 +35,7 @@ public class ImpParser extends Parser {
 			null, null, null, "'+'", "'-'", "'*'", "'/'", "'mod'", "'^'", "'&'", 
 			"'|'", "'=='", "'!='", "'<='", "'>='", "'<'", "'>'", "'!'", "'if'", "'then'", 
 			"'else'", "'while'", "'skip'", "'='", "'out'", "'fun'", "'return'", "'('", 
-			"')'", "'{'", "'}'", "';'"
+			"')'", "'{'", "'}'", "';'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -44,7 +44,7 @@ public class ImpParser extends Parser {
 			null, "NAT", "BOOL", "PLUS", "MINUS", "MUL", "DIV", "MOD", "POW", "AND", 
 			"OR", "EQQ", "NEQ", "LEQ", "GEQ", "LT", "GT", "NOT", "IF", "THEN", "ELSE", 
 			"WHILE", "SKIPP", "ASSIGN", "OUT", "FUN", "RETURN", "LPAR", "RPAR", "LBRACE", 
-			"RBRACE", "SEMICOLON", "ID", "WS"
+			"RBRACE", "SEMICOLON", "COLON", "ID", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -449,6 +449,10 @@ public class ImpParser extends Parser {
 		public ExpContext exp(int i) {
 			return getRuleContext(ExpContext.class,i);
 		}
+		public List<TerminalNode> COLON() { return getTokens(ImpParser.COLON); }
+		public TerminalNode COLON(int i) {
+			return getToken(ImpParser.COLON, i);
+		}
 		public CallContext(ExpContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -619,9 +623,9 @@ public class ImpParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(81);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				{
 				_localctx = new NatContext(_localctx);
@@ -683,46 +687,58 @@ public class ImpParser extends Parser {
 				match(ID);
 				setState(69);
 				match(LPAR);
-				setState(73);
+				setState(78);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NAT) | (1L << BOOL) | (1L << NOT) | (1L << LPAR) | (1L << ID))) != 0)) {
-					{
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NAT) | (1L << BOOL) | (1L << NOT) | (1L << LPAR) | (1L << ID))) != 0)) {
 					{
 					setState(70);
 					exp(0);
-					}
-					}
 					setState(75);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
+					while (_la==COLON) {
+						{
+						{
+						setState(71);
+						match(COLON);
+						setState(72);
+						exp(0);
+						}
+						}
+						setState(77);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					}
+					}
 				}
-				setState(76);
+
+				setState(80);
 				match(RPAR);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(99);
+			setState(103);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(97);
+					setState(101);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 					case 1:
 						{
 						_localctx = new PowContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(79);
+						setState(83);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(80);
+						setState(84);
 						match(POW);
-						setState(81);
+						setState(85);
 						exp(9);
 						}
 						break;
@@ -730,9 +746,9 @@ public class ImpParser extends Parser {
 						{
 						_localctx = new DivMulModContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(82);
+						setState(86);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(83);
+						setState(87);
 						((DivMulModContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL) | (1L << DIV) | (1L << MOD))) != 0)) ) {
@@ -743,7 +759,7 @@ public class ImpParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(84);
+						setState(88);
 						exp(8);
 						}
 						break;
@@ -751,9 +767,9 @@ public class ImpParser extends Parser {
 						{
 						_localctx = new PlusMinusContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(85);
+						setState(89);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(86);
+						setState(90);
 						((PlusMinusContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==PLUS || _la==MINUS) ) {
@@ -764,7 +780,7 @@ public class ImpParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(87);
+						setState(91);
 						exp(7);
 						}
 						break;
@@ -772,9 +788,9 @@ public class ImpParser extends Parser {
 						{
 						_localctx = new CmpExpContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(88);
+						setState(92);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(89);
+						setState(93);
 						((CmpExpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LEQ) | (1L << GEQ) | (1L << LT) | (1L << GT))) != 0)) ) {
@@ -785,7 +801,7 @@ public class ImpParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(90);
+						setState(94);
 						exp(6);
 						}
 						break;
@@ -793,9 +809,9 @@ public class ImpParser extends Parser {
 						{
 						_localctx = new EqExpContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(91);
+						setState(95);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(92);
+						setState(96);
 						((EqExpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==EQQ || _la==NEQ) ) {
@@ -806,7 +822,7 @@ public class ImpParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(93);
+						setState(97);
 						exp(5);
 						}
 						break;
@@ -814,9 +830,9 @@ public class ImpParser extends Parser {
 						{
 						_localctx = new LogicExpContext(new ExpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_exp);
-						setState(94);
+						setState(98);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(95);
+						setState(99);
 						((LogicExpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==AND || _la==OR) ) {
@@ -827,16 +843,16 @@ public class ImpParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(96);
+						setState(100);
 						exp(4);
 						}
 						break;
 					}
 					} 
 				}
-				setState(101);
+				setState(105);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			}
 			}
 		}
@@ -869,6 +885,10 @@ public class ImpParser extends Parser {
 			return getRuleContext(ComContext.class,0);
 		}
 		public TerminalNode SEMICOLON() { return getToken(ImpParser.SEMICOLON, 0); }
+		public List<TerminalNode> COLON() { return getTokens(ImpParser.COLON); }
+		public TerminalNode COLON(int i) {
+			return getToken(ImpParser.COLON, i);
+		}
 		public FunContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -887,47 +907,59 @@ public class ImpParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102);
+			setState(106);
 			match(FUN);
-			setState(103);
+			setState(107);
 			match(ID);
-			setState(104);
-			match(LPAR);
 			setState(108);
+			match(LPAR);
+			setState(117);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==ID) {
+			if (_la==ID) {
 				{
-				{
-				setState(105);
+				setState(109);
 				match(ID);
-				}
-				}
-				setState(110);
+				setState(114);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
+				while (_la==COLON) {
+					{
+					{
+					setState(110);
+					match(COLON);
+					setState(111);
+					match(ID);
+					}
+					}
+					setState(116);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				}
 			}
-			setState(111);
+
+			setState(119);
 			match(RPAR);
-			setState(112);
+			setState(120);
 			match(LBRACE);
-			setState(116);
+			setState(124);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << WHILE) | (1L << SKIPP) | (1L << OUT) | (1L << ID))) != 0)) {
 				{
-				setState(113);
+				setState(121);
 				com(0);
-				setState(114);
+				setState(122);
 				match(SEMICOLON);
 				}
 			}
 
-			setState(118);
+			setState(126);
 			match(RETURN);
-			setState(119);
+			setState(127);
 			exp(0);
-			setState(120);
+			setState(128);
 			match(RBRACE);
 			}
 		}
@@ -977,38 +1009,41 @@ public class ImpParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3#}\4\2\t\2\4\3\t\3"+
-		"\4\4\t\4\4\5\t\5\3\2\7\2\f\n\2\f\2\16\2\17\13\2\3\2\3\2\3\2\3\3\3\3\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3$\u0085\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\3\2\7\2\f\n\2\f\2\16\2\17\13\2\3\2\3\2\3\2\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\63\n\3\3\3\3\3\3\3\7"+
-		"\38\n\3\f\3\16\3;\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
-		"\3\4\7\4J\n\4\f\4\16\4M\13\4\3\4\5\4P\n\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4d\n\4\f\4\16\4g\13\4\3"+
-		"\5\3\5\3\5\3\5\7\5m\n\5\f\5\16\5p\13\5\3\5\3\5\3\5\3\5\3\5\5\5w\n\5\3"+
-		"\5\3\5\3\5\3\5\3\5\2\4\4\6\6\2\4\6\b\2\7\3\2\7\t\3\2\5\6\3\2\17\22\3\2"+
-		"\r\16\3\2\13\f\2\u008c\2\r\3\2\2\2\4\62\3\2\2\2\6O\3\2\2\2\bh\3\2\2\2"+
-		"\n\f\5\b\5\2\13\n\3\2\2\2\f\17\3\2\2\2\r\13\3\2\2\2\r\16\3\2\2\2\16\20"+
-		"\3\2\2\2\17\r\3\2\2\2\20\21\5\4\3\2\21\22\7\2\2\3\22\3\3\2\2\2\23\24\b"+
-		"\3\1\2\24\25\7\24\2\2\25\26\7\35\2\2\26\27\5\6\4\2\27\30\7\36\2\2\30\31"+
-		"\7\25\2\2\31\32\7\37\2\2\32\33\5\4\3\2\33\34\7 \2\2\34\35\7\26\2\2\35"+
-		"\36\7\37\2\2\36\37\5\4\3\2\37 \7 \2\2 \63\3\2\2\2!\"\7\"\2\2\"#\7\31\2"+
-		"\2#\63\5\6\4\2$\63\7\30\2\2%&\7\27\2\2&\'\7\35\2\2\'(\5\6\4\2()\7\36\2"+
-		"\2)*\7\37\2\2*+\5\4\3\2+,\7 \2\2,\63\3\2\2\2-.\7\32\2\2./\7\35\2\2/\60"+
-		"\5\6\4\2\60\61\7\36\2\2\61\63\3\2\2\2\62\23\3\2\2\2\62!\3\2\2\2\62$\3"+
-		"\2\2\2\62%\3\2\2\2\62-\3\2\2\2\639\3\2\2\2\64\65\f\5\2\2\65\66\7!\2\2"+
-		"\668\5\4\3\6\67\64\3\2\2\28;\3\2\2\29\67\3\2\2\29:\3\2\2\2:\5\3\2\2\2"+
-		";9\3\2\2\2<=\b\4\1\2=P\7\3\2\2>P\7\4\2\2?@\7\35\2\2@A\5\6\4\2AB\7\36\2"+
-		"\2BP\3\2\2\2CD\7\23\2\2DP\5\6\4\nEP\7\"\2\2FG\7\"\2\2GK\7\35\2\2HJ\5\6"+
-		"\4\2IH\3\2\2\2JM\3\2\2\2KI\3\2\2\2KL\3\2\2\2LN\3\2\2\2MK\3\2\2\2NP\7\36"+
-		"\2\2O<\3\2\2\2O>\3\2\2\2O?\3\2\2\2OC\3\2\2\2OE\3\2\2\2OF\3\2\2\2Pe\3\2"+
-		"\2\2QR\f\13\2\2RS\7\n\2\2Sd\5\6\4\13TU\f\t\2\2UV\t\2\2\2Vd\5\6\4\nWX\f"+
-		"\b\2\2XY\t\3\2\2Yd\5\6\4\tZ[\f\7\2\2[\\\t\4\2\2\\d\5\6\4\b]^\f\6\2\2^"+
-		"_\t\5\2\2_d\5\6\4\7`a\f\5\2\2ab\t\6\2\2bd\5\6\4\6cQ\3\2\2\2cT\3\2\2\2"+
-		"cW\3\2\2\2cZ\3\2\2\2c]\3\2\2\2c`\3\2\2\2dg\3\2\2\2ec\3\2\2\2ef\3\2\2\2"+
-		"f\7\3\2\2\2ge\3\2\2\2hi\7\33\2\2ij\7\"\2\2jn\7\35\2\2km\7\"\2\2lk\3\2"+
-		"\2\2mp\3\2\2\2nl\3\2\2\2no\3\2\2\2oq\3\2\2\2pn\3\2\2\2qr\7\36\2\2rv\7"+
-		"\37\2\2st\5\4\3\2tu\7!\2\2uw\3\2\2\2vs\3\2\2\2vw\3\2\2\2wx\3\2\2\2xy\7"+
-		"\34\2\2yz\5\6\4\2z{\7 \2\2{\t\3\2\2\2\13\r\629KOcenv";
+		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\63\n\3\3\3\3\3"+
+		"\3\3\7\38\n\3\f\3\16\3;\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\4\3\4\3\4\3\4\3\4\7\4L\n\4\f\4\16\4O\13\4\5\4Q\n\4\3\4\5\4T\n\4\3\4\3"+
+		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4"+
+		"h\n\4\f\4\16\4k\13\4\3\5\3\5\3\5\3\5\3\5\3\5\7\5s\n\5\f\5\16\5v\13\5\5"+
+		"\5x\n\5\3\5\3\5\3\5\3\5\3\5\5\5\177\n\5\3\5\3\5\3\5\3\5\3\5\2\4\4\6\6"+
+		"\2\4\6\b\2\7\3\2\7\t\3\2\5\6\3\2\17\22\3\2\r\16\3\2\13\f\2\u0096\2\r\3"+
+		"\2\2\2\4\62\3\2\2\2\6S\3\2\2\2\bl\3\2\2\2\n\f\5\b\5\2\13\n\3\2\2\2\f\17"+
+		"\3\2\2\2\r\13\3\2\2\2\r\16\3\2\2\2\16\20\3\2\2\2\17\r\3\2\2\2\20\21\5"+
+		"\4\3\2\21\22\7\2\2\3\22\3\3\2\2\2\23\24\b\3\1\2\24\25\7\24\2\2\25\26\7"+
+		"\35\2\2\26\27\5\6\4\2\27\30\7\36\2\2\30\31\7\25\2\2\31\32\7\37\2\2\32"+
+		"\33\5\4\3\2\33\34\7 \2\2\34\35\7\26\2\2\35\36\7\37\2\2\36\37\5\4\3\2\37"+
+		" \7 \2\2 \63\3\2\2\2!\"\7#\2\2\"#\7\31\2\2#\63\5\6\4\2$\63\7\30\2\2%&"+
+		"\7\27\2\2&\'\7\35\2\2\'(\5\6\4\2()\7\36\2\2)*\7\37\2\2*+\5\4\3\2+,\7 "+
+		"\2\2,\63\3\2\2\2-.\7\32\2\2./\7\35\2\2/\60\5\6\4\2\60\61\7\36\2\2\61\63"+
+		"\3\2\2\2\62\23\3\2\2\2\62!\3\2\2\2\62$\3\2\2\2\62%\3\2\2\2\62-\3\2\2\2"+
+		"\639\3\2\2\2\64\65\f\5\2\2\65\66\7!\2\2\668\5\4\3\6\67\64\3\2\2\28;\3"+
+		"\2\2\29\67\3\2\2\29:\3\2\2\2:\5\3\2\2\2;9\3\2\2\2<=\b\4\1\2=T\7\3\2\2"+
+		">T\7\4\2\2?@\7\35\2\2@A\5\6\4\2AB\7\36\2\2BT\3\2\2\2CD\7\23\2\2DT\5\6"+
+		"\4\nET\7#\2\2FG\7#\2\2GP\7\35\2\2HM\5\6\4\2IJ\7\"\2\2JL\5\6\4\2KI\3\2"+
+		"\2\2LO\3\2\2\2MK\3\2\2\2MN\3\2\2\2NQ\3\2\2\2OM\3\2\2\2PH\3\2\2\2PQ\3\2"+
+		"\2\2QR\3\2\2\2RT\7\36\2\2S<\3\2\2\2S>\3\2\2\2S?\3\2\2\2SC\3\2\2\2SE\3"+
+		"\2\2\2SF\3\2\2\2Ti\3\2\2\2UV\f\13\2\2VW\7\n\2\2Wh\5\6\4\13XY\f\t\2\2Y"+
+		"Z\t\2\2\2Zh\5\6\4\n[\\\f\b\2\2\\]\t\3\2\2]h\5\6\4\t^_\f\7\2\2_`\t\4\2"+
+		"\2`h\5\6\4\bab\f\6\2\2bc\t\5\2\2ch\5\6\4\7de\f\5\2\2ef\t\6\2\2fh\5\6\4"+
+		"\6gU\3\2\2\2gX\3\2\2\2g[\3\2\2\2g^\3\2\2\2ga\3\2\2\2gd\3\2\2\2hk\3\2\2"+
+		"\2ig\3\2\2\2ij\3\2\2\2j\7\3\2\2\2ki\3\2\2\2lm\7\33\2\2mn\7#\2\2nw\7\35"+
+		"\2\2ot\7#\2\2pq\7\"\2\2qs\7#\2\2rp\3\2\2\2sv\3\2\2\2tr\3\2\2\2tu\3\2\2"+
+		"\2ux\3\2\2\2vt\3\2\2\2wo\3\2\2\2wx\3\2\2\2xy\3\2\2\2yz\7\36\2\2z~\7\37"+
+		"\2\2{|\5\4\3\2|}\7!\2\2}\177\3\2\2\2~{\3\2\2\2~\177\3\2\2\2\177\u0080"+
+		"\3\2\2\2\u0080\u0081\7\34\2\2\u0081\u0082\5\6\4\2\u0082\u0083\7 \2\2\u0083"+
+		"\t\3\2\2\2\r\r\629MPSgitw~";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

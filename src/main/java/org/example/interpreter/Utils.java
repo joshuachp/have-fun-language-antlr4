@@ -8,11 +8,12 @@ public class Utils {
     public static void panic(ParserRuleContext ctx, String err) {
         System.err.println(err);
         System.err.println("@" + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine());
-        /* Debug context
+        /* Debug
         System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
         System.err.println(ctx.getText());
         System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<");
-        */
+         */
+
         throw new RuntimeException();
     }
 }

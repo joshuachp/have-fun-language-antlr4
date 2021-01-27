@@ -3,7 +3,3 @@ fun const() {
 }
 
 out(const())
-
-/* Output:
- * 5
- */

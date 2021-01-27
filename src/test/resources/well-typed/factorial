@@ -6,7 +6,3 @@ fun factorial(n) {
 }
 
 out(factorial(5))
-
-/* Output:
- * 120
- */

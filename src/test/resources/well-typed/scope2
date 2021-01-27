@@ -13,7 +13,3 @@ fun g(f) {
 f = 5;
 g = 3;
 out(g(f) + f(g) + f(f) + g(g))
-
-/* Output:
- * 114
- */
