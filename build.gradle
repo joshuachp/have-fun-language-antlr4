@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'org.joshuachp.Main'
+mainClassName = 'org.example.Main'
 
 group 'org.example'
 version '0.0.1'
@@ -19,7 +19,7 @@ jar {
 }
 
 dependencies {
-    compile 'org.antlr:antlr4-runtime:4.9.1'
+    implementation 'org.antlr:antlr4-runtime:4.9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }

@@ -1,10 +1,13 @@
 // Generated from /home/joshuachp/GitHub/have-fun-language/src/Imp.g4 by ANTLR 4.9.1
-package org.joshuachp.interpreter.antlr;
+package org.example.interpreter.antlr;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class ImpLexer extends Lexer {

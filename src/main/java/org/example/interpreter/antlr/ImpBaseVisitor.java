@@ -1,5 +1,5 @@
 // Generated from /home/joshuachp/GitHub/have-fun-language/src/Imp.g4 by ANTLR 4.9.1
-package org.joshuachp.interpreter.antlr;
+package org.example.interpreter.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

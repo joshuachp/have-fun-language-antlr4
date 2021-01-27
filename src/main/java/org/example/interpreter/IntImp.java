@@ -1,9 +1,9 @@
-package org.joshuachp.interpreter;
+package org.example.interpreter;
 
 
-import org.joshuachp.interpreter.antlr.ImpBaseVisitor;
-import org.joshuachp.interpreter.antlr.ImpParser;
-import org.joshuachp.interpreter.values.*;
+import org.example.interpreter.antlr.ImpBaseVisitor;
+import org.example.interpreter.antlr.ImpParser;
+import org.example.interpreter.values.*;
 
 import java.util.HashMap;
 import java.util.List;

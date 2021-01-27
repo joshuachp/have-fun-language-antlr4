@@ -1,8 +1,8 @@
-package org.joshuachp.interpreter;
+package org.example.interpreter;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.joshuachp.interpreter.antlr.ImpParser;
+import org.example.interpreter.antlr.ImpParser;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

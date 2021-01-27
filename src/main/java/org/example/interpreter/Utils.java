@@ -1,4 +1,4 @@
-package org.joshuachp.interpreter;
+package org.example.interpreter;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 

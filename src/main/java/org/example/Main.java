@@ -1,12 +1,12 @@
-package org.joshuachp;
+package org.example;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.joshuachp.interpreter.IntImp;
-import org.joshuachp.interpreter.antlr.ImpLexer;
-import org.joshuachp.interpreter.antlr.ImpParser;
+import org.example.interpreter.IntImp;
+import org.example.interpreter.antlr.ImpLexer;
+import org.example.interpreter.antlr.ImpParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
