@@ -21,7 +21,7 @@ exp : NAT                                 # nat
     | exp op=(EQQ | NEQ) exp              # eqExp
     | exp op=(AND | OR) exp               # logicExp
     | ID                                  # id
-    | ID LPAR (exp (COLON exp)*)? RPAR                   # call
+    | ID LPAR (exp (COLON exp)*)? RPAR    # call
    ;
 
 fun: FUN ID LPAR (ID (COLON ID)*)? RPAR LBRACE (com SEMICOLON)? RETURN exp RBRACE;

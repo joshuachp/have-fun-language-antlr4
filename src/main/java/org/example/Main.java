@@ -10,13 +10,16 @@ import org.example.interpreter.antlr.ImpParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class Main {
     public static void main(String[] args) throws URISyntaxException, IOException {
-        Path path = Paths.get(Main.class.getResource("../../program.txt").toURI());
+        URL resource = Main.class.getResource("../../program.txt");
+        assert resource != null;
+        Path path = Paths.get(resource.toURI());
         String program = Files.readString(path);
         execute(program);
     }

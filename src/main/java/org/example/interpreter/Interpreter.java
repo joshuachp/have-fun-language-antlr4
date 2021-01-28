@@ -1,6 +1,7 @@
 package org.example.interpreter;
 
 
+import org.example.Utils;
 import org.example.interpreter.antlr.ImpBaseVisitor;
 import org.example.interpreter.antlr.ImpParser;
 import org.example.interpreter.values.*;
@@ -16,11 +17,15 @@ import java.util.stream.Collectors;
 
 public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
 
+    // Function map, indexed by the name of the function
     private final HashMap<String, Fun> functions;
+    // Program output to file, used to test output
     private final BufferedWriter out;
+    // Memory map, indexed by the name of the Variable
     private HashMap<String, AbstractValue<?>> memory;
 
     public Interpreter() {
+        // Initialize all the proprieties
         memory = new HashMap<>();
         functions = new HashMap<>();
         try {
@@ -34,10 +39,7 @@ public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
         }
     }
 
-    private VoidValue visitCom(ImpParser.ComContext ctx) {
-        return (VoidValue) visit(ctx);
-    }
-
+    // Convert expression to Integer, panics if expression doesn't return an IntegerValue
     private Integer visitNatExp(ImpParser.ExpContext ctx) {
         Integer value = null;
         try {
@@ -49,6 +51,7 @@ public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
         return value;
     }
 
+    // Convert expression to Boolean, panics if expression doesn't return an BoolValue
     private Boolean visitBoolExp(ImpParser.ExpContext ctx) {
         Boolean value = null;
         try {
@@ -65,14 +68,14 @@ public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
         for (ImpParser.FunContext fun : ctx.fun()) {
             visitFun(fun);
         }
-        return visitCom(ctx.com());
+        return (VoidValue) visit(ctx.com());
     }
 
     @Override
     public VoidValue visitIf(ImpParser.IfContext ctx) {
-        return visitBoolExp(ctx.exp())
-                ? visitCom(ctx.com(0))
-                : visitCom(ctx.com(1));
+        return (VoidValue) (visitBoolExp(ctx.exp())
+                ? visit(ctx.com(0))
+                : visit(ctx.com(1)));
     }
 
     @Override
@@ -90,14 +93,14 @@ public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
 
     @Override
     public VoidValue visitSeq(ImpParser.SeqContext ctx) {
-        visitCom(ctx.com(0));
-        return visitCom(ctx.com(1));
+        visit(ctx.com(0));
+        return (VoidValue) visit(ctx.com(1));
     }
 
     @Override
     public VoidValue visitWhile(ImpParser.WhileContext ctx) {
         while (visitBoolExp(ctx.exp())) {
-            visitCom(ctx.com());
+            visit(ctx.com());
         }
         return new VoidValue();
     }
@@ -230,43 +233,46 @@ public class Interpreter extends ImpBaseVisitor<AbstractReturnValue> {
 
     @Override
     public AbstractReturnValue visitCall(ImpParser.CallContext ctx) {
+        // Get the name of the function
         String name = ctx.ID().getText();
+        // Check if it was previously declared
         if (!functions.containsKey(name)) {
             Utils.panic(ctx, "Function " + name + " used but never declared");
         }
 
         Fun fun = functions.get(name);
-        List<ImpParser.ExpContext> argsCtx = ctx.exp();
         List<String> argsName = fun.getParameters();
+        // Get the argument context to be evaluated into AbstractValues
+        List<ImpParser.ExpContext> argsCtx = ctx.exp();
 
+        // Check if we have the same number of arguments in the function and values provided
         if (argsCtx.size() != argsName.size()) {
             Utils.panic(ctx, "Function f called with the wrong number of arguments");
         }
 
-        // Create the new memory map
+        // Create a new memory map for the value of the arguments
         HashMap<String, AbstractValue<?>> newMemory = new HashMap<>();
 
-        // First get the parameter value
+        // We first evaluate the expressions in the arguments before changing to the function context (newMemory)
         List<AbstractValue<?>> args = argsCtx.stream()
                 .map((exp) -> (AbstractValue<?>) visit(exp))
                 .collect(Collectors.toList());
         for (int i = 0; i < args.size(); i++) {
+            // Put the values in memory with the respective argument name
             newMemory.put(argsName.get(i), args.get(i));
         }
 
-        // Then save the memory state and swap the new memory
+        // Then save the memory state before the call and swap to the function new memory state
         HashMap<String, AbstractValue<?>> snapshot = this.memory;
         this.memory = newMemory;
 
-
-        // Visit the function
+        // Visit the function body (if there is one) and get the return value
         if (fun.getBody() != null) {
-            visitCom(fun.getBody());
+            visit(fun.getBody());
         }
-
         AbstractValue<?> ret = (AbstractValue<?>) visit(fun.getRet());
 
-        // Reset the memory
+        // Reset the memory to the state before the function call
         this.memory = snapshot;
         return ret;
     }
